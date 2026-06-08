@@ -9,10 +9,12 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // On mount: check if there's an existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        setUser(session?.user ?? null)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
 
     // Listen for login / logout / token-refresh events
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
